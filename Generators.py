@@ -35,7 +35,7 @@ def create_bday():
     return str(bday_day) + ' ' + bday_month + ' ' + year
 
 
-def generate_uid(user, time):
+def generate_uid(user, curr_time):
     alpha_to_num_values = {'a': 1, 'b': 2, 'c': 3, 'd': 4,
                            'e': 5, 'f': 6, 'g': 7, 'h': 8,
                            'i': 9, 'j': 10, 'k': 11, 'l': 12,
@@ -63,5 +63,6 @@ def generate_uid(user, time):
         part_two_total *= 3
 
     part_three_total = int(str(part_one_total) + str(part_two_total))
-    part_four_total = part_three_total // shape_to_num_values[user.shape]
-    return time - part_four_total
+    part_four_total = part_three_total // 2.5
+    part_five_total = int(curr_time) - part_four_total
+    return part_five_total // 4
