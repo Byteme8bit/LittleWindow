@@ -24,11 +24,15 @@ def create_bday():
     if bday_month in ['Jan', 'Mar', 'May', 'Jul', 'Aug', 'Oct', 'Dec']:
         bday_day = random.randint(1, 31)
 
-    if bday_month in ['Apr', 'Jun', 'Sept', 'Nov']:
+    elif bday_month in ['Apr', 'Jun', 'Sept', 'Nov']:
         bday_day = random.randint(1, 30)
 
-    if bday_month == 'Feb':
-        bday_day = random.randint(1, 28)
+    else:
+        roll = random.randint(0, 20)
+        if roll < 1:
+            bday_day = random.randint(1, 29)
+        else:
+            bday_day = random.randint(1, 28)
 
     year = '19' + str(random.randint(57, 99))
 
@@ -44,13 +48,10 @@ def generate_uid(user, curr_time):
                            'u': 21, 'v': 22, 'w': 23, 'x': 24,
                            'y': 25, 'z': 26}
 
-    shape_to_num_values = {'Circle': 27, 'Triangle': 28, 'Diamond': 29,
-                           'Square': 30, 'Rectangle': 31, 'Octagon': 32,
-                           'Oval': 33}
-
     split_full_name = user.name.lower().split()
     firstname = list(split_full_name[0])
     lastname = list(split_full_name[1])
+    len_of_ct = len(str(curr_time))
 
     part_one_total = 0
     for char_f in firstname:
@@ -63,6 +64,8 @@ def generate_uid(user, curr_time):
         part_two_total *= 3
 
     part_three_total = int(str(part_one_total) + str(part_two_total))
-    part_four_total = part_three_total // 2.5
-    part_five_total = int(curr_time) - part_four_total
-    return part_five_total // 4
+    part_four_total = part_three_total / (2 + random.uniform(0, 0.5)) + int(str(curr_time)[:int(len_of_ct // 3)])
+    part_five_total = int(part_four_total // 4)
+    # return int(part_five_total) // 4
+    return part_five_total
+# str(int(curr_time[:len(str(int(curr_time)))//2]))

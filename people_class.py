@@ -8,7 +8,8 @@ class Person:
     def __repr__(self):
         return f"Name: {self.name}\n" \
                f"Birthday: {self.bday}\n" \
-               f"Init @: {self.created_time}\n"
+               f"Init @: {self.created_time}\n" \
+               f"ID: {self.id}"
 
     def __str__(self):
         return f"{self.name} was born on {self.bday}."
@@ -21,4 +22,4 @@ class Person:
         self.name = name
         self.bday = str(bday)
         self.created_time = str(time.strftime('%d-%m-%Y %H:%M:%S'))
-        self.id = Generators.generate_uid(self, time.time())
+        self.id = int(Generators.generate_uid(self, time.time()))

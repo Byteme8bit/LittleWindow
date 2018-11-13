@@ -11,12 +11,12 @@ import people_class
 #         yield Generators.intialize_person()
 
 
-with open('testDB5.csv', mode='w') as csv_file:
-    # headers = ['name', 'bday', 'date']
+with open('testDB7.csv', mode='w') as csv_file:
+    headers = ['name', 'bday', 'date', 'created', 'id']
     writer = csv.writer(csv_file, delimiter=',')
 
     # writer.writerow(headers)
     for i in range(100):
         person = people_class.Person(Generators.pick_a_name(), Generators.create_bday())
         writer.writerow(person)
-        time.sleep(random.uniform(0, 3))
+        time.sleep(random.uniform(2, 7))
