@@ -2,18 +2,21 @@ __author__ = "byteme8bit"
 import random
 import people_class
 import time
+import os
+
+modules = '.\\modules\\'
 
 
 def pick_a_name():
-    first_names = [line.rstrip() for line in open('first_names')]
-    last_names = [line.rstrip() for line in open('last_names')]
+    first_names = [line.rstrip() for line in open(os.fsencode(modules + 'first_names'))]
+    last_names = [line.rstrip() for line in open(os.fsencode(modules + 'last_names'))]
     random_name = random.choice(first_names)
     random_name += ' ' + random.choice(last_names)
     return random_name
 
 
 def pick_full_name():
-    listed_names = [line.rstrip() for line in open('names_full')]
+    listed_names = [line.rstrip() for line in open(os.fsencode(modules + 'names_full'))]
     random_name = random.choice(listed_names)
     return random_name
 
