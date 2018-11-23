@@ -9,18 +9,20 @@ import people_class
 database_uri = "mongodb+srv://mx1:brain!!@cluster0-bmfcx.gcp.mongodb.net/test?retryWrites=true"
 client = pymongo.MongoClient(database_uri)
 database = client['LittlePeople']
-collection = database['People Group 1']
-cached_posts = collection.find({})
-
-may_ppl = []
-for post in cached_posts:
-    if 'May' in post['bday']:
-        may_ppl.append({'name': post['name']})
-        may_ppl.append({'bday': post['bday']})
-print(may_ppl)
-line_count = 1
-for i in range(0, len(may_ppl), 2):
-    print(may_ppl[i], may_ppl[i + 1])
+# collection = database['People Group 1']
+for entry in database.list_collection_names():      # TODO turn this method into a list?
+    collection = database[entry]
+    print(f'Current collection: {collection}')
+    cached_posts = collection.find({})
+    may_ppl = []
+    for post in cached_posts:
+        if 'May' in post['bday']:
+            may_ppl.append({'name': post['name']})
+            may_ppl.append({'bday': post['bday']})
+    print(f'People with May birthdays in {collection}:\n{may_ppl}')
+    line_count = 1
+    for i in range(0, len(may_ppl), 2):
+        print(may_ppl[i], may_ppl[i + 1])
 # for person in may_ppl:
 #     print(person['name'], person['bday'])
 
