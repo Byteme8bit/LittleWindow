@@ -6,8 +6,7 @@ import pymongo
 import time
 
 # Program Imports
-import Generators
-import people_class
+from modules import people_class, Generators
 
 # DB Cluster
 database_uri = "mongodb+srv://mx1:brain!!@cluster0-bmfcx.gcp.mongodb.net/test?retryWrites=true"

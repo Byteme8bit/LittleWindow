@@ -1,6 +1,5 @@
 __author__ = "byteme8bit"
-import random
-import Generators
+from modules import Generators
 import time
 
 

@@ -1,10 +1,6 @@
 __author__ = "byteme8bit"
 
-import random
 import pymongo
-import time
-import Generators
-import people_class
 
 database_uri = "mongodb+srv://mx1:brain!!@cluster0-bmfcx.gcp.mongodb.net/test?retryWrites=true"
 client = pymongo.MongoClient(database_uri)

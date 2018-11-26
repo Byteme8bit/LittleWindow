@@ -1,7 +1,5 @@
 __author__ = "byteme8bit"
 import random
-import people_class
-import time
 import os
 
 modules = '.\\modules\\'

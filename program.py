@@ -1,7 +1,6 @@
 __author__ = "byteme8bit"
 # Program imports
-import people_class
-import Generators
+from modules import people_class, Generators
 
 # Module imports
 import pymongo
@@ -23,26 +22,33 @@ def main():
           'Also, the ID is generated based off\nof a unique equation using the time generated so having delays between '
           'each entry helps give more randomized IDs.\n\n')
 
-    time.sleep(6)
-    client = connect_to_uri()
-    print('Connection to server/cluster completed.\n\n')
+    # time.sleep(6)
+    reconnect = 'y'
 
-    database = choose_database(client)
-    print(f'Opening database: {database}\n\n')
+    while reconnect == 'y':
+        client = connect_to_uri()
+        print('Connection to server/cluster completed.\n\n')
 
-    chosen_collection = choose_collection(client, database)
-    print(f'Opening or creating collection: {chosen_collection}\n\n')
+        database = choose_database(client)
+        print(f'Opening database: {database}\n\n')
 
-    keep_going = 'y'
+        chosen_collection = choose_collection(client, database)
+        print(f'Opening or creating collection: {chosen_collection}\n\n')
 
-    while keep_going == 'y':
-        w_r = write_or_read()
-        if w_r == 'read':
-            read_program(database, chosen_collection)
-        else:
-            write_program(client, database, chosen_collection)
+        stay_in_current_db = 'y'
 
-        keep_going = input('Would you like to perform more actions on this database? (y or n): ')
+        while stay_in_current_db == 'y':
+            w_r = write_or_read()
+            if w_r == 'read':
+                read_program(client, database, chosen_collection)
+            else:
+                write_program(client, database, chosen_collection)
+
+            stay_in_current_db = input('Would you like to perform more actions in this database? (y or n): ')
+            print()
+
+        reconnect = input('Would you like to reconnect to another server/cluster?: ')
+        print()
 
 
 def double_check_function():
@@ -165,9 +171,38 @@ def read_program(client, db_name, collection):
     :param collection: User's chosen collection
     :return:
     """
+
     database = client[db_name]
     c = database[collection]
-    pass
+    cached_entries = c.find({})
+    total_entries = 0
+    print(f'\tCurrent db: {db_name}\n'
+          f'\tCurrent collection: {collection}\n'
+          f'There are {total_entries} in this collection.')
+    filtered = input('Would you like to show filtered or unfiltered entries?: ').lower().strip()
+    print()
+    pos_ans = 'filtered', 'unfiltered'
+
+    # Checks for valid input
+    while filtered not in pos_ans or filtered == ('' or ' ') or not filtered.isalpha():
+        print('Please type either "filtered" or "unfiltered".')
+        filtered = input('Would you like to show filtered or unfiltered entries?: ').lower().strip()
+        print()
+
+    # Checks user's selection
+    if filtered == 'filtered':
+        pass
+
+    else:  # Prints unfiltered results. (all entries one by one)
+        item = 1
+        for entry in cached_entries:
+            print('==========\n',
+                  f'Entry #{item}\n',
+                  f"ID#: {entry['id']}", '\n',
+                  entry['name'], entry['bday'], '\n',
+                  f"Added to collection on {entry['created']}", '\n'
+                                                                '==========\n')
+            item += 1
 
 
 def write_program(client, db_name, collection):
@@ -244,7 +279,7 @@ def write_program(client, db_name, collection):
           f' With delay: min {delay_1} - max {delay_2} seconds\n')
 
     # Loops over the desired number of times
-    for i in range(1, num_to_add + 1):      # Starts at 1 for itemization print outs
+    for i in range(1, num_to_add + 1):  # Starts at 1 for itemization print outs
         chosen_delay = random.uniform(delay_1, delay_2)
         print(f'Adding entry #{i} out of {num_to_add} total entries with a delay of {chosen_delay} seconds before '
               f'next entry.')

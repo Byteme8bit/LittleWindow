@@ -1,9 +1,5 @@
-import random
-
 __author__ = "byteme8bit"
-import time
-import people_class
-import Generators
+from modules import people_class, Generators
 
 person = people_class.Person(Generators.pick_a_name(), Generators.create_bday())
 
