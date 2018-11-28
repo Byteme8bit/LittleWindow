@@ -41,13 +41,14 @@ def main():
             w_r = write_or_read()
             if w_r == 'read':
                 read_program(client, database, chosen_collection)
+
             else:
                 write_program(client, database, chosen_collection)
 
             stay_in_current_db = input('Would you like to perform more actions in this database? (y or n): ')
             print()
 
-        reconnect = input('Would you like to reconnect to another server/cluster?: ')
+        reconnect = input('Would you like to connect to another server/cluster?: ')
         print()
 
 
@@ -172,37 +173,133 @@ def read_program(client, db_name, collection):
     :return:
     """
 
-    database = client[db_name]
-    c = database[collection]
-    cached_entries = c.find({})
-    total_entries = 0
-    print(f'\tCurrent db: {db_name}\n'
-          f'\tCurrent collection: {collection}\n'
-          f'There are {total_entries} in this collection.')
-    filtered = input('Would you like to show filtered or unfiltered entries?: ').lower().strip()
-    print()
-    pos_ans = 'filtered', 'unfiltered'
+    def iterate_over_results():
+        if cached_names:
+            for name in cached_names:
+                print(f"ID: {name['id']}\n"
+                      f"Name: {name['name']}\n"
+                      f"BDay: {name['bday']}\n")
 
-    # Checks for valid input
-    while filtered not in pos_ans or filtered == ('' or ' ') or not filtered.isalpha():
-        print('Please type either "filtered" or "unfiltered".')
-        filtered = input('Would you like to show filtered or unfiltered entries?: ').lower().strip()
-        print()
+        else:
+            print('None found.')
 
-    # Checks user's selection
-    if filtered == 'filtered':
-        pass
+    database_continue = 'y'
+    while database_continue == 'y':
 
-    else:  # Prints unfiltered results. (all entries one by one)
-        item = 1
-        for entry in cached_entries:
-            print('==========\n',
-                  f'Entry #{item}\n',
-                  f"ID#: {entry['id']}", '\n',
-                  entry['name'], entry['bday'], '\n',
-                  f"Added to collection on {entry['created']}", '\n'
-                                                                '==========\n')
-            item += 1
+        collection_continue = 'y'
+        while collection_continue == 'y':
+
+            database = client[db_name]
+            c = database[collection]
+            cached_entries = c.find({})
+            total_entries = 0
+            for entry in cached_entries:
+                total_entries += 1
+
+            print(f'+~~~\tCurrent db: {db_name} \t~~~+\n'
+                  f'+~~~\tCurrent collection: {collection} \t~~~+\n'
+                  f'+~~~\tThere are {total_entries} in this collection. \t~~~+\n\n')
+
+            time.sleep(1)
+            print('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+            print('You may do one of the following actions (type the word in brackets to make a selection):\n'
+                  '\t* [Search] for specific name, bday, ID and return # of matches\n'
+                  '\t\t With ability to create new database from results\n'
+                  '\t* [Filter] and sort all databases into corresponding databases based on bday month\n'
+                  '\t* [Filter] and sort all entries/DBs by ID and offer to export to local .txt or .csv\n'
+                  '\t* [List] all entries in current collection to console, filtered or unfiltered.\n')
+            print('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+
+            selection = input('Your selection (Search, Filter, List): ').lower().strip()
+            print()
+            pos_ans2 = 'search', 'filter', 'list'
+
+            while selection not in pos_ans2 or len(selection) > 6 or selection == (
+                    '' or ' ') or not selection.isalpha():
+                print('Please select a valid answer. (Search, Filter, List)')
+                selection = input('Your selection (Search, Filter, List): ').lower().strip()
+                print()
+
+            if selection == 'search':
+                select_search_type = input('What do you want to search for? (Name, Bday, ID): ').lower().strip()
+                print()
+                pos_search_types = 'name', 'bday', 'id'
+
+                while select_search_type not in pos_search_types or select_search_type == (
+                        '' or ' ') or len(select_search_type) > 4 or not select_search_type.isalpha():
+                    print('Please select a valid response. (Name, Bday, ID).')
+                    select_search_type = input('What do you want to search for? (Name, Bday, ID): ').lower().strip()
+                    print()
+
+                if select_search_type == 'name':
+                    search_param = input('What is the name you want to search for?: ')
+                    print()
+                    cached_names = c.find({'name': search_param})
+                    iterate_over_results()
+
+                elif select_search_type == 'bday':
+                    search_param = input('What is the birthday you want to search for?: ')
+                    print()
+                    cached_names = c.find({'bday': search_param})
+                    iterate_over_results()
+
+                else:  # == 'id'
+                    search_param = input('What is the ID you want to search for?: ')
+                    print()
+                    cached_names = c.find({'id': search_param})
+                    iterate_over_results()
+
+            elif selection == 'filter':
+                pass
+
+            elif selection == 'list':
+                cached_entries = c.find({})
+                item = 1
+                for entry in cached_entries:
+                    print('==========\n',
+                          f'Entry #{item}\n',
+                          f"ID#: {entry['id']}", '\n',
+                          entry['name'], entry['bday'], '\n',
+                          f"Added to collection on {entry['created']}", '\n'
+                                                                        '==========\n')
+
+            # else:
+            #     item = 1
+            #     for entry in cached_entries:
+            #         print('==========\n',
+            #               f'Entry #{item}\n',
+            #               f"ID#: {entry['id']}", '\n',
+            #               entry['name'], entry['bday'], '\n',
+            #               f"Added to collection on {entry['created']}", '\n'
+            #                                                             '==========\n')
+            #         item += 1
+                # filtered = input('Would you like to show filtered or unfiltered entries?: ').lower().strip()
+                # print()
+                # pos_ans = 'filtered', 'unfiltered'
+                #
+                # # Checks for valid input
+                # while filtered not in pos_ans or filtered == ('' or ' ') or not filtered.isalpha():
+                #     print('Please type either "filtered" or "unfiltered".')
+                #     filtered = input('Would you like to show filtered or unfiltered entries?: ').lower().strip()
+                #     print()
+                #
+                # # Checks user's selection
+                # if filtered == 'filtered':
+                #     pass
+                #
+                # else:  # Prints unfiltered results. (all entries one by one)
+                #     item = 1
+                #     for entry in cached_entries:
+                #         print('==========\n',
+                #               f'Entry #{item}\n',
+                #               f"ID#: {entry['id']}", '\n',
+                #               entry['name'], entry['bday'], '\n',
+                #               f"Added to collection on {entry['created']}", '\n'
+                #                                                             '==========\n')
+                #         item += 1
+            collection_continue = input('Continue reading from this same collection?: ')
+
+        database_continue = input('Continue reading from this same database?: ')
 
 
 def write_program(client, db_name, collection):
@@ -220,6 +317,7 @@ def write_program(client, db_name, collection):
         User selects amount of entries to add
         :return: integer value
         """
+        # nta = number to add
         nta = input('How many entries should the script add?: ')
         print()
 
@@ -293,9 +391,7 @@ def write_program(client, db_name, collection):
 
 if __name__ == "__main__":
     main()
-    print('Finalizing changes to collection...\n')
-    time.sleep(2)
-    print('Shutting the database...\n')
+    print('Finalizing changes to collection(s)...\n')
     time.sleep(1)
     print('Closing connection to server/cluster...\n')
     time.sleep(1)
